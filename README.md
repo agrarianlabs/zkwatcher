@@ -30,18 +30,20 @@ func main() {
 	}
 	defer conn.Close()
 
-	watcher, err := zkwatcher.NewWatcher(conn)
-	if err != nil {
-		log.Fatal(err)
-	}
+	watcher := zkwatcher.NewWatcher(conn)
 	defer func() { _ = watcher.Close() }()
 
 	// Make sure the path exists before starting the watcher.
 	if err := watcher.Watch("/path/to/watch"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	for event := range watcher.C {
+		if event.Error != nil {
+			log.Println(err)
+			return
+		}
 		fmt.Printf("%s on %s\n", event.Type, event.Path)
 	}
 }
@@ -61,6 +63,12 @@ If you have Docker, make sure you have the `DOCKER_IP` variable defined and run:
 make test
 ```
 
+or with custom test options:
+
+```bash
+make test OPTS='-short -v -cover'
+```
+
 ### Without Docker
 
 If you don't have Docker, you can spin up a Zookeeper on your own and then run:
@@ -72,5 +80,5 @@ go test -v -tags integration -zk-host $YOUR_ZK_TARGET .
 or if you have godep:
 
 ```bash
-godep go test -v -tags integration -zk-host $YOUR_ZK_TARGET .
+godep go test -v -cover -tags integration -zk-host $YOUR_ZK_TARGET .
 ```

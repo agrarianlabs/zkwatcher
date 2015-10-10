@@ -4,7 +4,7 @@ ZK_HOST         = $(DOCKER_IP)
 ZK_PORT         = 2181
 GO              = $(shell hash godep 2> /dev/null && echo "godep go" || echo "go")
 MAKE           ?= make
-
+OPTS           ?= -v -cover -covermode=count -coverprofile=coverprofile
 
 docker_ip       :
 		@[ -n "$(DOCKER_IP)" ] || (echo "Please run `export DOCKER_IP=<target docker ip>`."; exit 1)
@@ -20,7 +20,7 @@ stop_zookeeper  : docker_ip
 		@rm -f .zk_port
 
 _test           : start_zookeeper
-		@$(GO) test -v -cover -covermode=count -coverprofile=coverprofile -tags integration -zk-host=$(DOCKER_IP):$(shell cat .zk_port) || ($(MAKE) stop_zookeeper; exit 1)
+		@$(GO) test $(OPTS) -tags integration -zk-host=$(DOCKER_IP):$(shell cat .zk_port) || ($(MAKE) stop_zookeeper; exit 1)
 
 test            : _test stop_zookeeper
 
