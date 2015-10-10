@@ -1,0 +1,10 @@
+{
+	"ImportPath": "github.com/agrarianlabs/service/lib/zookeeper/zkwatcher",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/samuel/go-zookeeper/zk",
+			"Rev": "177002e16a0061912f02377e2dd8951a8b3551bc"
+		}
+	]
+}
