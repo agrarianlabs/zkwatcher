@@ -9,7 +9,6 @@ OPTS           ?= -v -cover -covermode=count -coverprofile=coverprofile
 docker_ip       :
 		@[ -n "$(DOCKER_IP)" ] || (echo "Please run `export DOCKER_IP=<target docker ip>`."; exit 1)
 
-# TODO: implement better way to detect that zookeeper is up and running.
 start_zookeeper : docker_ip
 		@docker run -d -p $(ZK_PORT) --name $(ZK_CONTAINER) $(ZK_IMAGE) > /dev/null
 		@sleep 1
